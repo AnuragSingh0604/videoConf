@@ -25,9 +25,9 @@ export default function Authentication() {
 
     
 
-    const [username, setUsername] = React.useState();
-    const [password, setPassword] = React.useState();
-    const [name, setName] = React.useState();
+    const [username, setUsername] = React.useState("");
+    const [password, setPassword] = React.useState("");
+    const [name, setName] = React.useState("");
     const [error, setError] = React.useState();
     const [message, setMessage] = React.useState();
 
@@ -44,6 +44,9 @@ export default function Authentication() {
             if (formState === 0) {
 
                 let result = await handleLogin(username, password)
+                 setUsername("");
+                 setPassword("");
+                  setMessage(result);
 
 
             }
@@ -71,19 +74,21 @@ export default function Authentication() {
             <Grid container component="main" sx={{ height: '100vh' }}>
                 <CssBaseline />
                 <Grid
-                    item
-                    xs={false}
-                    sm={4}
-                    md={7}
-                    sx={{
-                        backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
-                        backgroundRepeat: 'no-repeat',
-                        backgroundColor: (t) =>
-                            t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                    }}
-                />
+  item
+  xs={false}
+  sm={4}
+  md={7}
+  sx={{
+    backgroundImage: 'url(/background.jpeg)',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundColor: (t) =>
+      t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
+    height: '100vh', // Ensure it has height
+  }}
+/>
+
                 <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
                     <Box
                         sx={{
@@ -100,10 +105,10 @@ export default function Authentication() {
 
 
                         <div>
-                            <Button variant={formState === 0 ? "contained" : ""} onClick={() => { setFormState(0) }}>
+                            <Button variant={formState === 0 ? "contained" : "text"} onClick={() => { setFormState(0) }}>
                                 Sign In
                             </Button>
-                            <Button variant={formState === 1 ? "contained" : ""} onClick={() => { setFormState(1) }}>
+                            <Button variant={formState === 1 ? "contained" : "text"} onClick={() => { setFormState(1) }}>
                                 Sign Up
                             </Button>
                         </div>
