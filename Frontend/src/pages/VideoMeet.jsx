@@ -140,7 +140,10 @@ export default function VideoMeetComponent() {
         for (let id in connections) {
             if (id === socketIdRef.current) continue
 
-            connections[id].addStream(window.localStream)
+            window.localStream.getTracks().forEach(track => {
+  connections[id].addTrack(track, window.localStream);
+});
+
 
             connections[id].createOffer().then((description) => {
                 console.log(description)
