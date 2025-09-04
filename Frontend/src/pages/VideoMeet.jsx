@@ -68,46 +68,45 @@ export default function VideoMeetComponent() {
         console.log("HELLO")
         getPermissions();
 
-    },[])
+    }, [])
 
     let getDislayMedia = () => {
         if (screen) {
             if (navigator.mediaDevices.getDisplayMedia) {
                 navigator.mediaDevices.getDisplayMedia({ video: true, audio: true })
                     .then(getDislayMediaSuccess)
-                    .then((stream) => { })
                     .catch((e) => console.log(e))
             }
         }
     }
 
-           const getPermissions = async () => {
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    const getPermissions = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
 
-        if (stream) {
-            // Save stream globally
-            window.localStream = stream;
+            if (stream) {
+                // Save stream globally
+                window.localStream = stream;
 
-            // Update permission flags
-            setVideoAvailable(stream.getVideoTracks().length > 0);
-            setAudioAvailable(stream.getAudioTracks().length > 0);
+                // Update permission flags
+                setVideoAvailable(stream.getVideoTracks().length > 0);
+                setAudioAvailable(stream.getAudioTracks().length > 0);
 
-            // Show preview
-            if (localVideoref.current) {
-                localVideoref.current.srcObject = stream;
+                // Show preview
+                if (localVideoref.current) {
+                    localVideoref.current.srcObject = stream;
+                }
+
+                // Screen sharing support check
+                setScreenAvailable(!!navigator.mediaDevices.getDisplayMedia);
             }
-
-            // Screen sharing support check
+        } catch (err) {
+            console.error("Permission denied or error:", err);
+            setVideoAvailable(false);
+            setAudioAvailable(false);
             setScreenAvailable(!!navigator.mediaDevices.getDisplayMedia);
         }
-    } catch (err) {
-        console.error("Permission denied or error:", err);
-        setVideoAvailable(false);
-        setAudioAvailable(false);
-        setScreenAvailable(!!navigator.mediaDevices.getDisplayMedia);
-    }
-};
+    };
 
 
     useEffect(() => {
@@ -118,7 +117,7 @@ export default function VideoMeetComponent() {
         }
 
 
-    }, [video, audio])
+    }, [video, audio,])
     let getMedia = () => {
         setVideo(videoAvailable);
         setAudio(audioAvailable);
@@ -134,15 +133,15 @@ export default function VideoMeetComponent() {
             window.localStream.getTracks().forEach(track => track.stop())
         } catch (e) { console.log(e) }
 
-        window.localStream = stream
-        localVideoref.current.srcObject = stream
+        window.localStream = stream;
+        localVideoref.current.srcObject = stream;
 
         for (let id in connections) {
             if (id === socketIdRef.current) continue
 
             window.localStream.getTracks().forEach(track => {
-  connections[id].addTrack(track, window.localStream);
-});
+                connections[id].addTrack(track, window.localStream);
+            });
 
 
             connections[id].createOffer().then((description) => {
@@ -186,13 +185,13 @@ export default function VideoMeetComponent() {
         if ((video && videoAvailable) || (audio && audioAvailable)) {
             navigator.mediaDevices.getUserMedia({ video: video, audio: audio })
                 .then(getUserMediaSuccess)
-                .then((stream) => { })
+
                 .catch((e) => console.log(e))
         } else {
             try {
                 let tracks = localVideoref.current.srcObject.getTracks()
                 tracks.forEach(track => track.stop())
-            } catch (e) { }
+            } catch (e) { console.log(e) }
         }
     }
 
@@ -283,7 +282,7 @@ export default function VideoMeetComponent() {
             socketRef.current.on('user-joined', (id, clients) => {
                 clients.forEach((socketListId) => {
 
-                    connections[socketListId] = new RTCPeerConnection(peerConfigConnections)
+                    connections[socketListId] = new RTCPeerConnection(peerConfigConnections);
                     // Wait for their ice candidate       
                     connections[socketListId].onicecandidate = function (event) {
                         if (event.candidate != null) {
@@ -431,7 +430,7 @@ export default function VideoMeetComponent() {
         // this.setState({ message: "", sender: username })
     }
 
-    
+
     let connect = () => {
         setAskForUsername(false);
         getMedia();
@@ -496,7 +495,7 @@ export default function VideoMeetComponent() {
                             {(video === true) ? <VideocamIcon /> : <VideocamOffIcon />}
                         </IconButton>
                         <IconButton onClick={handleEndCall} style={{ color: "red" }}>
-                            <CallEndIcon  />
+                            <CallEndIcon />
                         </IconButton>
                         <IconButton onClick={handleAudio} style={{ color: "white" }}>
                             {audio === true ? <MicIcon /> : <MicOffIcon />}
@@ -512,7 +511,7 @@ export default function VideoMeetComponent() {
                                 <ChatIcon />                        </IconButton>
                         </Badge>
 
-                     </div>
+                    </div>
 
 
                     <video className={styles.meetUserVideo} ref={localVideoref} autoPlay muted></video>
