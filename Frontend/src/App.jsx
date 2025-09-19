@@ -4,6 +4,7 @@ import LandingPage from "./pages/Landing";
 import VideoMeetComponent from "./pages/VideoMeet";
 import Authentication from "./pages/auth";
 import { AuthProvider } from "./contexts/AuthContext";
+import HomeComponent from "./pages/Home";
 function App(){
     return(<div className="App">
 
